@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="org.iclass.rest.dao.BookUserMapper">
+ 	<select id="login" resultType="BookUser">
+ 		select * 
+ 		from 
+ 			bookuser
+		where id=#{id} and password = #{password}
+ 	</select>
+	<select id="selectOne" resultType="BookUser">
+		select *
+		from bookuser
+		where id=#{id}
+ 	</select>
+	<select id="isExist" resultType="int">
+		select count(*)
+		from
+		    BOOKUSER
+		where id=#{id}
+	</select>
+ 	<insert id="insert">
+ 		insert into bookuser (id,name,email,birth,REG_DATE,password,subjects)
+ 		values
+ 			(#{id},#{name},#{email},#{birth},sysdate,#{password},#{subjects,jdbcType=VARCHAR})
+ 	</insert>
+	<!-- password 컬럼 제외하고 여러 항목 변경할 때-->
+	<update id="changeMany">
+		update BOOKUSER
+		set email=#{email},birth=#{birth},subjects=#{subjects}
+		where id=#{id}
+	</update>
+	<!-- birth, password, email , subjects 컬럼을 각각 변경할 때 : #{} 는 문자열 취급 '' 자동 표시 .
+	컬럼명은 '' 붙으면 안되므로 이럴때는 ${}-->
+	<update id="changeOneField">
+		update BOOKUSER
+		set ${field}=#{value}
+		where id=#{id}
+	</update>
+
+	<delete id="delete">
+		delete from BOOKUSER where id=#{id}
+	</delete>
+
+	<!--
+	<update id="changeEmail">
+		update BOOKUSER
+		set email=#{email}
+		where id=#{id}
+	</update>
+
+	<update id="changeBirth">
+		update BOOKUSER
+		set birth=#{birth}
+		where id=#{id}
+	</update>
+
+	<update id="changePassword">
+		update BOOKUSER
+		set password=#{password}
+		where id=#{id}
+	</update>-->
+
+
+	<select id="selectAll" resultType="BookUser">
+		select *
+		from
+			(select * from
+				(select rownum r , b.* from (
+						select *
+						from bookuser
+						order by REG_DATE desc) b))
+	</select>
+ </mapper>
+
+ 
+ 
+ 
+ 
